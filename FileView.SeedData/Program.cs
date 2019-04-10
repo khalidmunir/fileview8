@@ -6,49 +6,121 @@ using System.Threading.Tasks;
 using System.Configuration;
 using FileView.Models;
 using FileView.Repositories;
+using CsvHelper;
+using IO = System.IO;
 
 namespace FileView.SeedData
 {
     class Program
     {
 
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
+            //if(args.Length < 1 || (args[0].ToLower() != "true" || args[0].ToLower() != "false"))
+            //{
+            //    Console.WriteLine("Syntax: FileView.SeedData <bool ResetAll>");
+            //    Console.WriteLine("eg. FileView.SeedData true");
+            //    Environment.Exit(0);
+            //}
+
+            //bool resetAll = args[0].ToLower() == "true" ? true : false;
+            var resetAll = true;
+
             // The code provided will print ‘Hello World’ to the console.
             // Press Ctrl+F5 (or go to Debug > Start Without Debugging) to run your app.
             var connectionString = args.Length > 0 ? args[0] : ConfigurationManager.ConnectionStrings[0].ToString();
             Console.WriteLine("Import Seed Data: " + connectionString);
-            Console.ReadKey();
 
+            string csvPath = $"{Environment.CurrentDirectory}\\..\\..\\Seed_Data\\";
+            string employeeCsv = $"{csvPath}employee_seed.csv";
+            string fileInfoCsv = $"{csvPath}fileInfo_seed.csv";
+            //IO.StreamReader sr = new IO.StreamReader(employeeCsv);
+            //CsvReader reader = new CsvReader(sr);
 
-            IFileInfo _fileInfoManager = new FileInfoManager();
-            IEmployee _employeeManager = new EmployeeManager();
+            //IEnumerable<Employee> employees = reader.GetRecords<Employee>();
+            //foreach(var employee in employees)
+            //{
+            //    Console.WriteLine($"Firstname: {employee.FirstName}\t LastName: {employee.LastName}");
+            //}
 
-            await _employeeManager.InsertEmployeeAsync(new Employee() { Id = 4, FirstName = "DavidX", LastLogin = DateTime.Now, ManagerId = 0, Level = 0 });
-            await _fileInfoManager.InsertFileInfoAsync(new FileInfo() { Id = 5, EmployeeId = 1, FilePath = @"FolderA\FolderX", Volume = @"\\192.168.0.1\C$\", FileName = "FileA.Doc", AccessTime = DateTime.Now, CreatedTime = DateTime.Now, ModifiedTime = DateTime.Now, Size = 0 });
+            var employeeManager = new EmployeeManager();
+            var employeeCount = 0;
+            try
+            {
+                if(resetAll)
+                {
+                    Task.Run(() => employeeManager.DeleteAllEmployeeAsync()).Wait();
+                    Console.WriteLine("Deleted All Employees!");
+                }
 
-            _employeeManager.Dispose();
-            _fileInfoManager.Dispose();
+                string[] contents = IO.File.ReadAllText(employeeCsv).Split('\n');
+                foreach (var line in contents)
+                {
+                    var fields = line.Substring(0, line.Length - 1).Split(',').ToArray();
+                    var employee = new Employee();
+                    employee.LastLogin = Convert.ToDateTime(fields[0]);
+                    employee.Id = Convert.ToInt32(fields[1]);
+                    employee.FirstName = fields[3];
+                    employee.LastName = fields[4];
+                    employee.Email = fields[5];
+                    employee.Level = Convert.ToInt32(fields[6]);
+                    employee.ManagerId = Convert.ToInt32(fields[7]);
+                    employee.BusinessArea = fields[9];
 
-            //var filename = Environment.CurrentDirectory + @"\Seed_Data\employee_seed.csv";
+                    var employeeId = Task.Run(() => employeeManager.InsertEmployeeAsync(employee)).Result;
+                    employeeCount++;
+                    Console.WriteLine($"Inserted Employee[{employeeCount}] EmployeeId: {employeeId}");
+                }
+            }
+            finally
+            {
+                employeeManager.Dispose();
+            }
 
-            //string[] contents = File.ReadAllText(filename).Split('\n');
-            //var csv = from line in contents
-            //          select line.Split(',').ToArray();
+            var fileInfoManager = new FileInfoManager();
+            var fileInfoCount = 0;
+            try
+            {
+                if (resetAll)
+                {
+                    Task.Run(() => fileInfoManager.DeleteAllFileInfoAsync()).Wait();
+                    Console.WriteLine("Deleted All FileInfos!");
+                }
 
-            //Trace.WriteLine(filename);
-            //Trace.WriteLine(contents);
+                string[] contents = IO.File.ReadAllText(fileInfoCsv).Split('\n');
+                foreach (var line in contents)
+                {
+                    var fields = line.Substring(0, line.Length - 1).Split(',').ToArray();
+                    var fileInfo = new FileInfo();
+                    fileInfo.FileName = fields[0];
+                    fileInfo.FilePath = fields[1];
+                    fileInfo.Volume = fields[2];
+                    fileInfo.Size = Convert.ToInt32(fields[3]);
+                    fileInfo.CreatedTime = Convert.ToDateTime(fields[4]);
+                    fileInfo.ModifiedTime = Convert.ToDateTime(fields[5]);
+                    fileInfo.AccessTime = Convert.ToDateTime(fields[6]);
+                    fileInfo.MD5 = fields[7];
+                    fileInfo.SecurityClassification = fields[8];
+                    fileInfo.BusinessClassification = fields[9];
+                    fileInfo.Extension = fields[10];
+                    fileInfo.MimeType = fields[11];
+                    fileInfo.EmployeeId = Convert.ToInt32(fields[12]);
 
+                    var fileInfoId = Task.Run(() => fileInfoManager.InsertFileInfoAsync(fileInfo)).Result;
+                    fileInfoCount++;
+                    Console.WriteLine($"Inserted FileInfo[{fileInfoCount}] FileInfoId: {fileInfoId}");
+                }
+            }
+            finally
+            {
+                fileInfoManager.Dispose();
+            }
 
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-            //  to avoid creating duplicate seed data.
-
-
-            Console.ReadKey();
-
-
-
-            // Go to http://aka.ms/dotnet-get-started-console to continue learning how to build a console app! 
+            Console.WriteLine();
+            Console.WriteLine($"Employees Imported: {employeeCount}");
+            Console.WriteLine($"FilerInfo's Imported: {fileInfoCount}");
+            Console.WriteLine();
+            Console.WriteLine("Import Complete!");
         }
     }
 }

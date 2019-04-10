@@ -34,5 +34,11 @@ namespace FileView.Repositories
             return employee.Id;
         }
 
+        public async Task DeleteAllEmployeeAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var employees = _dataContext.Employees;
+            _dataContext.Employees.RemoveRange(employees);
+            await _dataContext.SaveChangesAsync(cancellationToken);
+        }
     }
 }

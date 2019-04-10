@@ -9,6 +9,8 @@ namespace FileView.Models
 {
     public class Employee
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
         public DateTime LastLogin { get;  set; }
         public string FirstName { get; set; }
@@ -18,6 +20,6 @@ namespace FileView.Models
         public int ManagerId { get; set; }
         public string BusinessArea { get; set; }
 
-        public ICollection<FileInfo> FileInfos { get; set; }
+        public virtual ICollection<FileInfo> FileInfos { get; set; }
     }
 }

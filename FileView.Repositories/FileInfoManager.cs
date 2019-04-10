@@ -34,5 +34,12 @@ namespace FileView.Repositories
             return fileInfo.Id;
         }
 
+        public async Task DeleteAllFileInfoAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var fileInfos = _dataContext.FileInfos;
+            _dataContext.FileInfos.RemoveRange(fileInfos);
+            await _dataContext.SaveChangesAsync(cancellationToken);
+        }
+
     }
 }

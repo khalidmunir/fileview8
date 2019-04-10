@@ -3,7 +3,7 @@ namespace FileView.Repositories.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class InitialSchema : DbMigration
+    public partial class ReCreateSchemas : DbMigration
     {
         public override void Up()
         {
@@ -11,7 +11,7 @@ namespace FileView.Repositories.Migrations
                 "dbo.Employees",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
+                        Id = c.Int(nullable: false),
                         LastLogin = c.DateTime(nullable: false),
                         FirstName = c.String(),
                         LastName = c.String(),

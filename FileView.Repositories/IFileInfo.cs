@@ -13,5 +13,6 @@ namespace FileView.Repositories
     {
         Task<FileInfo> GetFileInfoAsync(long Id, CancellationToken cancellationToken = default(CancellationToken));
         Task<long> InsertFileInfoAsync(FileInfo fileInfo, CancellationToken cancellationToken = default(CancellationToken));
+        Task DeleteAllFileInfoAsync(CancellationToken cancellationToken = default(CancellationToken));
     }
 }

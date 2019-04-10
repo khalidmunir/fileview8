@@ -9,9 +9,10 @@ using FileView.Models;
 
 namespace FileView.Repositories
 {
-    public interface IEmployee: IDisposable
+    public interface IEmployee : IDisposable
     {
-        Task<Employee> GetEmployeeAsync(int Id, CancellationToken cancellationToken = default (CancellationToken));
-        Task<int> InsertEmployeeAsync(Employee employee, CancellationToken cancellationToken = default (CancellationToken));
+        Task<Employee> GetEmployeeAsync(int Id, CancellationToken cancellationToken = default(CancellationToken));
+        Task<int> InsertEmployeeAsync(Employee employee, CancellationToken cancellationToken = default(CancellationToken));
+        Task DeleteAllEmployeeAsync(CancellationToken cancellationToken = default(CancellationToken));
     }
 }

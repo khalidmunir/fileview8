@@ -7,13 +7,13 @@ namespace FileView.Repositories.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class InitialSchema : IMigrationMetadata
+    public sealed partial class ReCreateSchemas : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(InitialSchema));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(ReCreateSchemas));
         
         string IMigrationMetadata.Id
         {
-            get { return "201904091536129_InitialSchema"; }
+            get { return "201904101521586_ReCreateSchemas"; }
         }
         
         string IMigrationMetadata.Source

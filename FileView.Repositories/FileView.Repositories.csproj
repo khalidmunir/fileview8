@@ -53,9 +53,9 @@
     <Compile Include="FileInfoManager.cs" />
     <Compile Include="IEmployee.cs" />
     <Compile Include="IFileInfo.cs" />
-    <Compile Include="Migrations\201904091536129_InitialSchema.cs" />
-    <Compile Include="Migrations\201904091536129_InitialSchema.Designer.cs">
-      <DependentUpon>201904091536129_InitialSchema.cs</DependentUpon>
+    <Compile Include="Migrations\201904101521586_ReCreateSchemas.cs" />
+    <Compile Include="Migrations\201904101521586_ReCreateSchemas.Designer.cs">
+      <DependentUpon>201904101521586_ReCreateSchemas.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -71,8 +71,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201904091536129_InitialSchema.resx">
-      <DependentUpon>201904091536129_InitialSchema.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201904101521586_ReCreateSchemas.resx">
+      <DependentUpon>201904101521586_ReCreateSchemas.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
